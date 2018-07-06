@@ -2,10 +2,7 @@
  * Created by wangmin on 18/7/16.
  */
 
-
-exports = module.exports = tuple('log!access','base!111','busi', function hello(log,base,busi) {
-  console.log('base==',base())
-  console.log('busi=',busi)
+exports = module.exports = tuple('log!access','lib','base!111','abusi', function hello(log,lib,base,abusi) {
   return [
     tuple('noname', function (r) {
       r.result = {a: 'noname'}

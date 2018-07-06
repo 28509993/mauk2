@@ -24,11 +24,44 @@ app.use(async (ctx, next) => {
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
 })
 
+class ExtendRouter extends mauk.Router {
+  constructor(...args) {
+    super(...args);
+  }
+  async fail (e){
+    const val = {errcode: 9999, message: e.message, errstack:e.stack};
+    // if (this.ctx.accepts('html')){
+    //   this.ctx.response.type = 'text/html';
+    //   this.ctx.response.body = `<h1>${JSON.stringify(val)}</h1>`;
+    // } else if (this.ctx.accepts('json')) {
+    //   this.ctx.response.body = val;
+    // }
+    ExtendRouter.endBody(this.ctx,val)
+  }
+  async success (){
+    const val = Object.assign({errcode: 0}, this.result);
+    // if (this.ctx.accepts('html')){
+    //   this.ctx.response.type = 'text/html';
+    //   this.ctx.response.body = `<h1>${JSON.stringify(val)}</h1>`;
+    // } else if (this.ctx.accepts('json')) {
+    //   this.ctx.response.body = val
+    // }
+    ExtendRouter.endBody(this.ctx,val)
+  }
+  static endBody(ctx, val){
+    if (ctx.accepts('html')){
+      ctx.response.type = 'text/html';
+      ctx.response.body = `<h1>${JSON.stringify(val)}</h1>`;
+    } else if (ctx.accepts('json')) {
+      ctx.response.body = val
+    }
+  }
+}
 
-
-let builer = mauk({contextPath:'app/main',domain:'zzz'})
-builer = require('./app/plus')(builer)
-const handler = builer.build()
+let handler = mauk({contextPath:'app/main',domain:'zzz'})
+  .addPlus('demo/plusbase')
+  .addPlus('demo/plusbusi')
+  .build()
 app.use(async(ctx,next) => {
   await  handler(ctx,next)
 })
