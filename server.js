@@ -24,9 +24,17 @@ app.use(async (ctx, next) => {
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
 })
 
+
+class ExtendRouter extends mauk.Router {
+  constructor(...args) {
+    super(args);
+  }
+}
+
 const handler = mauk({contextPath:'app/main',domain:'zzz'})
   .addPlus("app/plusbase.js")
   .addPlus("app/plusbusi.js")
+  .addBean(ExtendRouter)
   .build()
 app.use(async(ctx,next) => {
   await  handler(ctx,next)
@@ -35,7 +43,7 @@ app.use(async(ctx,next) => {
 // app.use(async (ctx, next) => {
 //   if (ctx.accepts('html')){
 //     ctx.response.type = 'text/html';
-//     ctx.response.body = "<h1>not found!</h1>";
+//     ctx.response.body = "<h1>not haha found!</h1>";
 //   } else if (ctx.accepts('json')) {
 //     ctx.response.body = {errcode:9999,message:'not found'};
 //   }
